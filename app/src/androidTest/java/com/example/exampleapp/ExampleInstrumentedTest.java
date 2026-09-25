@@ -1,4 +1,4 @@
-package com.example.exampleapp;
+package com.example.Cortex;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package com.example.exampleapp;
+package com.example.Cortex;
 
 import org.junit.Test;
 
