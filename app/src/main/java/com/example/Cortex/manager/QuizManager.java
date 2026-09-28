@@ -10,19 +10,19 @@ import com.example.Cortex.model.QuizSession;
 import com.example.Cortex.util.Constants;
 import com.example.Cortex.util.JsonUtils;
 import com.example.Cortex.util.ScoreCalculator;
+import com.example.Cortex.listener.Callback;
 
 import java.util.List;
 
 /**
  * Manages the quiz: setup validation, data fetching, question flow, answer checking.
- */
-public class QuizManager {
+ */ 
+public class QuizManager  {
 
     private final TriviaApi triviaApi = new TriviaApi();
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private List<Question> questions;
-    private int currentIndex;
     private QuizSession session;
     private QuizListener listener;
 
@@ -30,29 +30,32 @@ public class QuizManager {
         this.listener = listener;
     }
 
+    public QuizSession getSession() {
+        return session;
+    }
+
     /**
      * Starts the quiz with the given setup values.
      */
+
     public void start(String amountLabel, String category, String difficulty, String type) {
         if (amountLabel == null) amountLabel = String.valueOf(Constants.MAX_AMOUNT);
         if (category == null)    category = Constants.DEFAULT_CATEGORY;
         if (difficulty == null)  difficulty = Constants.DEFAULT_DIFFICULTY;
         if (type == null)        type = Constants.DEFAULT_TYPE;
 
-        // Reset session state
         session = new QuizSession();
 
         int amount = validateAmount(amountLabel);
 
         triviaApi.fetchQuestions(amount, category, difficulty, type,
-            new TriviaApi.Callback() {
+            new Callback() {
                 @Override
                 public void onSuccess(String json) {
                     handler.post(() -> {
                         questions = JsonUtils.parseQuestions(json);
-                        currentIndex = 0;
-                        // Record total for the session
                         session.setTotalQuestions(questions.size());
+                        session.setCurrentIndex(0);
                         showCurrentQuestion();
                     });
                 }
@@ -60,6 +63,7 @@ public class QuizManager {
                 @Override
                 public void onError(String error) {
                     handler.post(() -> {
+                        // Caller decides what to do with empty list
                     });
                 }
             });
@@ -69,10 +73,8 @@ public class QuizManager {
      * Checks the given answer and updates the session.
      */
     public boolean checkAnswer(String answer) {
-        if (questions == null || questions.isEmpty()) return false;
-
-        Question current = questions.get(currentIndex);
-        if (current == null) return false;
+        //get the current question
+        Question current = getCurrentQuestion();
 
         boolean isCorrect = current.getCorrectAnswer().equals(answer);
 
@@ -97,29 +99,29 @@ public class QuizManager {
 
     /**
      * Advances to the next question.
+     *
+     * @return The next question, or null if the quiz is finished
      */
     public Question nextQuestion() {
-        if (questions == null) return null;
+        int next = session.getCurrentIndex() + 1;
+        session.setCurrentIndex(next);
 
-        currentIndex++;
-
-        if (currentIndex >= questions.size()) {
+        if (next >= questions.size()) {
             return null;
         }
+
         showCurrentQuestion();
-        return questions.get(currentIndex);
+        return questions.get(next);
     }
 
-    public QuizSession getSession() {
-        return session;
-    }
-
-    public int getCurrentNumber() {
-        return currentIndex + 1;
-    }
-
-    public int getTotalQuestions() {
-        return questions == null ? 0 : questions.size();
+    /**
+     * Returns the current question.
+     */
+    public Question getCurrentQuestion() {
+        if (questions == null || questions.isEmpty()) return null;
+        int idx = session.getCurrentIndex();
+        if (idx < 0 || idx >= questions.size()) return null;
+        return questions.get(idx);
     }
 
     public int validateAmount(String amountLabel) {
@@ -128,9 +130,15 @@ public class QuizManager {
         return Math.min(requested, Constants.MAX_AMOUNT);
     }
 
-    public Question getCurrentQuestion() {
-        if (questions == null || questions.isEmpty()) return null;
-        return questions.get(currentIndex);
+    public String questionType(String type) {
+        if (type == null) return "";
+        if (type.equalsIgnoreCase("multiple")) return "MULTI";
+        if (type.equalsIgnoreCase("boolean"))  return "TRUE / FALSE";
+        return type.toUpperCase();
+    }
+
+    public int calculateProgress(int number, int total) {
+        return (int) (((number - 1) / (float) total) * 100);
     }
 
     public void shutdown() {
@@ -142,8 +150,11 @@ public class QuizManager {
     private void showCurrentQuestion() {
         if (listener == null || questions == null || questions.isEmpty()) return;
 
-        Question q = questions.get(currentIndex);
-        listener.onQuestionReady(q, currentIndex + 1, questions.size());
+        Question q = getCurrentQuestion();
+        if (q == null) return;
+
+        int number = session.getCurrentIndex() + 1;
+        listener.onQuestionReady(q, number, questions.size());
     }
 
     private int extractNumber(String text) {

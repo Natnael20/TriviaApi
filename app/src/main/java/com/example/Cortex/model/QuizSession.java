@@ -5,6 +5,7 @@ package com.example.Cortex.model;
  */
 public class QuizSession {
 
+    private int currentIndex;
     private int score;
     private int streak;
     private int bestStreak;
@@ -12,21 +13,59 @@ public class QuizSession {
     private int wrongCount;
     private int totalQuestions;
 
-    public int getScore() { return score; }
-    public void setScore(int score) { this.score = score; }
+    public int getCurrentIndex() { 
+        return currentIndex;
+    }
 
-    public int getStreak() { return streak; }
-    public void setStreak(int streak) { this.streak = streak; }
+    public void setCurrentIndex(int currentIndex) { 
+        this.currentIndex = currentIndex; 
+    }
 
-    public int getBestStreak() { return bestStreak; }
-    public void setBestStreak(int bestStreak) { this.bestStreak = bestStreak; }
+    public int getScore() { 
+        return score; 
+    }
 
-    public int getCorrectCount() { return correctCount; }
-    public void setCorrectCount(int correctCount) { this.correctCount = correctCount; }
+    public void setScore(int score) { 
+        this.score = score; 
+    }
 
-    public int getWrongCount() { return wrongCount; }
-    public void setWrongCount(int wrongCount) { this.wrongCount = wrongCount; }
+    public int getStreak() { 
+        return streak; 
+    }
 
-    public int getTotalQuestions() { return totalQuestions; }
-    public void setTotalQuestions(int totalQuestions) { this.totalQuestions = totalQuestions; }
+    public void setStreak(int streak) { 
+        this.streak = streak; 
+    }
+
+    public int getBestStreak() { 
+        return bestStreak; 
+    }
+
+    public void setBestStreak(int bestStreak) { 
+        this.bestStreak = bestStreak; 
+    }
+
+    public int getCorrectCount() { 
+        return correctCount; 
+    }
+
+    public void setCorrectCount(int correctCount) { 
+        this.correctCount = correctCount; 
+    }
+
+    public int getWrongCount() { 
+        return wrongCount; 
+    }
+
+    public void setWrongCount(int wrongCount) { 
+        this.wrongCount = wrongCount; 
+    }
+
+    public int getTotalQuestions() { 
+        return totalQuestions; 
+    }
+
+    public void setTotalQuestions(int totalQuestions) { 
+        this.totalQuestions = totalQuestions; 
+    }
 }

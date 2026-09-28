@@ -5,26 +5,25 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
 import com.example.Cortex.R;
 import com.example.Cortex.ResultActivity;
 import com.example.Cortex.components.core.EdgeLightningView;
-import com.example.Cortex.components.core.Menu;
 import com.example.Cortex.listener.QuizListener;
+import com.example.Cortex.manager.EdgeLightningManager;
 import com.example.Cortex.manager.QuizManager;
 import com.example.Cortex.model.Question;
 import com.example.Cortex.model.QuizSession;
 import com.example.Cortex.util.AnimationUtils;
 import com.example.Cortex.util.Constants;
 import com.example.Cortex.util.ScoreCalculator;
-
+import com.example.Cortex.Enum.Event;
+import java.util.Locale;
 import java.util.List;
 
 /**
@@ -47,7 +46,9 @@ public class Quiz implements QuizListener {
     private TextView questionTextView;
     private LinearLayout answersContainer;
     private TextView nextButton;
+    
     private EdgeLightningView edgeLightningView;
+    private EdgeLightningManager lightning;
 
     private boolean answered = false;
     private int secondsLeft = Constants.TIME_PER_QUESTION_SECONDS;
@@ -71,6 +72,9 @@ public class Quiz implements QuizListener {
         this.activity = activity;
     }
 
+    /**
+     * Starts the quiz with the given setup values.
+     */
     public void start(String amountLabel, String category, String difficulty, String type) {
         lastDisplayedScore = 0;
         initializeViews();
@@ -96,42 +100,49 @@ public class Quiz implements QuizListener {
         answersContainer = activity.findViewById(R.id.answersContainer);
         nextButton = activity.findViewById(R.id.nextButton);
         edgeLightningView = activity.findViewById(R.id.edgeLightningView);
-
+        
+        lightning = EdgeLightningManager.getInstance(activity);
         nextButton.setOnClickListener(v -> goToNextQuestion());
-
-        // Enable Edge Lightning if the toggle is on
-        if (edgeLightningView != null && Menu.isEdgeLightningEnabled()) {
-            edgeLightningView.setVisibility(View.VISIBLE);
-            edgeLightningView.setGlowColor(0xFF00D9FF);
-            edgeLightningView.setIntensity(0.6f);
-        }
+        lightning.applyEvent(edgeLightningView, Event.NEUTRAL);
     }
 
-    @Override
+    @Override 
     public void onQuestionReady(Question question, int number, int total) {
-        progressTextView.setText("Q " + number + " / " + total);
+        progressTextView.setText(number + " / " + total);
         categoryTextView.setText(question.getCategory().toUpperCase());
-        difficultyTextView.setText(question.getDifficulty().toUpperCase());
-        typeTextView.setText(questionType(question.getType()));
+        difficultyTextView.setText(applyDifficultyColor(question.getDifficulty()));
+        typeTextView.setText(quizManager.questionType(question.getType()));
         questionTextView.setText(question.getQuestion());
-
-        int progress = (int) (((number - 1) / (float) total) * 100);
-        progressBar.setProgress(progress);
-
+        progressBar.setProgress(quizManager.calculateProgress(number, total));
         updateScoreAndStreak();
 
         answered = false;
         buildAnswerButtons(question);
         startTimer();
-
-        // Reset Edge Lightning to accent color
-        if (edgeLightningView != null && edgeLightningView.getVisibility() == View.VISIBLE) {
-            edgeLightningView.setGlowColor(0xFF00D9FF);
-            edgeLightningView.setIntensity(0.6f);
-        }
+        lightning.applyEvent(edgeLightningView, Event.NEW_QUESTION);
     }
 
-    // ============ TIMER ============
+    private String applyDifficultyColor(String difficulty) {
+        String key = difficulty.trim().toLowerCase();
+        int color;
+        switch (key) {
+            case Constants.DIFFICULTY_EASY:
+                color = ContextCompat.getColor(activity, R.color.success);
+                break;
+            case Constants.DIFFICULTY_MEDIUM:
+                color = ContextCompat.getColor(activity, R.color.warning);
+                break;
+            case Constants.DIFFICULTY_HARD:
+                color = ContextCompat.getColor(activity, R.color.error);
+                break;
+            default:
+                color = ContextCompat.getColor(activity, R.color.text_secondary);
+                break;
+        }
+
+        difficultyTextView.setTextColor(color);
+        return key.toUpperCase();
+    }
 
     private void startTimer() {
         stopTimer();
@@ -168,23 +179,16 @@ public class Quiz implements QuizListener {
         Question current = quizManager.getCurrentQuestion();
         if (current != null) highlightAnswers(current, null);
 
-        // Red Edge Lightning on timeout
-        if (edgeLightningView != null && edgeLightningView.getVisibility() == View.VISIBLE) {
-            edgeLightningView.setGlowColor(0xFFFF4757);
-            edgeLightningView.setIntensity(1f);
-        }
-
-        Toast.makeText(activity, "Time's up!", Toast.LENGTH_SHORT).show();
+        lightning.applyEvent(edgeLightningView, Event.TIME_UP);
     }
 
-    // ============ ANSWERS ============
+    // ============ Answer Buttons ============
 
     private void buildAnswerButtons(Question question) {
         answersContainer.removeAllViews();
 
         List<String> answers = question.getAllAnswers();
-        if (answers == null) return;
-
+        
         for (String answer : answers) {
             answersContainer.addView(createAnswerView(answer, question));
         }
@@ -199,13 +203,13 @@ public class Quiz implements QuizListener {
         tv.setBackgroundResource(R.drawable.answer_option_bg);
         tv.setClickable(true);
         tv.setFocusable(true);
+        tv.setGravity(Gravity.CENTER_VERTICAL);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 0, 0, 12);
         tv.setLayoutParams(params);
-        tv.setGravity(Gravity.CENTER_VERTICAL);
 
         tv.setOnClickListener(v -> handleAnswerClick(tv, answer, question));
         return tv;
@@ -220,11 +224,8 @@ public class Quiz implements QuizListener {
         updateScoreAndStreak();
         highlightAnswers(question, clicked);
 
-        // Edge Lightning reaction: green if correct, red if wrong
-        if (edgeLightningView != null && edgeLightningView.getVisibility() == View.VISIBLE) {
-            edgeLightningView.setGlowColor(isCorrect ? 0xFF00E676 : 0xFFFF4757);
-            edgeLightningView.setIntensity(1f);
-        }
+        lightning.applyEvent(edgeLightningView,
+            isCorrect ? Event.CORRECT : Event.WRONG);
     }
 
     private void highlightAnswers(Question question, TextView clicked) {
@@ -243,64 +244,59 @@ public class Quiz implements QuizListener {
         }
     }
 
-    // ============ NAVIGATION ============
+    // ============ Navigation ============
 
     private void goToNextQuestion() {
         stopTimer();
         Question next = quizManager.nextQuestion();
 
         if (next == null) {
-            QuizSession session = quizManager.getSession();
-
-            Intent intent = new Intent(activity, ResultActivity.class);
-            intent.putExtra(Constants.EXTRA_SCORE, session.getScore());
-            intent.putExtra(Constants.EXTRA_CORRECT, session.getCorrectCount());
-            intent.putExtra(Constants.EXTRA_WRONG, session.getWrongCount());
-            intent.putExtra(Constants.EXTRA_BEST_STREAK, session.getBestStreak());
-            intent.putExtra(Constants.EXTRA_TOTAL, session.getTotalQuestions());
-
-            intent.putExtra(Constants.EXTRA_AMOUNT,
-                activity.getIntent().getStringExtra(Constants.EXTRA_AMOUNT));
-            intent.putExtra(Constants.EXTRA_CATEGORY,
-                activity.getIntent().getStringExtra(Constants.EXTRA_CATEGORY));
-            intent.putExtra(Constants.EXTRA_DIFFICULTY,
-                activity.getIntent().getStringExtra(Constants.EXTRA_DIFFICULTY));
-            intent.putExtra(Constants.EXTRA_TYPE,
-                activity.getIntent().getStringExtra(Constants.EXTRA_TYPE));
-
-            activity.startActivity(intent);
-            activity.finish();
+            openResultScreen();
         }
     }
 
-    // ============ HELPERS ============
+    private void openResultScreen() {
+        QuizSession session = quizManager.getSession();
+
+        Intent intent = new Intent(activity, ResultActivity.class);
+        intent.putExtra(Constants.EXTRA_SCORE, session.getScore());
+        intent.putExtra(Constants.EXTRA_CORRECT, session.getCorrectCount());
+        intent.putExtra(Constants.EXTRA_WRONG, session.getWrongCount());
+        intent.putExtra(Constants.EXTRA_BEST_STREAK, session.getBestStreak());
+        intent.putExtra(Constants.EXTRA_TOTAL, session.getTotalQuestions());
+
+        intent.putExtra(Constants.EXTRA_AMOUNT,
+            activity.getIntent().getStringExtra(Constants.EXTRA_AMOUNT));
+        intent.putExtra(Constants.EXTRA_CATEGORY,
+            activity.getIntent().getStringExtra(Constants.EXTRA_CATEGORY));
+        intent.putExtra(Constants.EXTRA_DIFFICULTY,
+            activity.getIntent().getStringExtra(Constants.EXTRA_DIFFICULTY));
+        intent.putExtra(Constants.EXTRA_TYPE,
+            activity.getIntent().getStringExtra(Constants.EXTRA_TYPE));
+
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
+    // ============ Score + Streak ============
 
     private void updateScoreAndStreak() {
         QuizSession session = quizManager.getSession();
         if (session == null) return;
 
         int target = session.getScore();
-
         if (target != lastDisplayedScore) {
             AnimationUtils.animateCount(scoreTextView, lastDisplayedScore, target, " pts");
             lastDisplayedScore = target;
         }
 
         int streak = session.getStreak();
-        String multiplier = ScoreCalculator.multiplierLabel(streak);
-        streakTextView.setText("" + multiplier);
+        streakTextView.setText(ScoreCalculator.multiplierLabel(streak));
 
         if (streak > 0) {
             streakTextView.setTextColor(ContextCompat.getColor(activity, R.color.warning));
         } else {
-            streakTextView.setTextColor(ContextCompat.getColor(activity, R.color.text_hint));
+            streakTextView.setTextColor(ContextCompat.getColor(activity, R.color.text_secondary));
         }
-    }
-
-    private String questionType(String type) {
-        if (type == null) return "";
-        if (type.equalsIgnoreCase("multiple")) return "MULTI";
-        if (type.equalsIgnoreCase("boolean"))  return "TRUE / FALSE";
-        return type.toUpperCase();
     }
 }

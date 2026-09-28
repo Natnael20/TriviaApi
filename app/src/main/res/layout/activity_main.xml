@@ -17,98 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- VERSION FOOTER -->
-    <TextView
-        android:id="@+id/versionTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="v1.0"
-        android:textColor="@color/text_hint"
-        android:textSize="11sp"
-        android:letterSpacing="0.2"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- PLAY SOLO BUTTON -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/playSoloButton"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:text="PLAY SOLO"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.15"
-        android:textColor="@color/white"
-        app:cornerRadius="16dp"
-        app:backgroundTint="@color/primary"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toTopOf="@id/versionTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- HIGH SCORE BOX -->
-    <LinearLayout
-        android:id="@+id/highScoreRow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:background="@drawable/high_score_box_bg"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toTopOf="@id/playSoloButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BEST  "
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            android:letterSpacing="0.2"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/highScoreValueTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textColor="@color/accent"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="   ·   "
-            android:textColor="@color/text_hint"
-            android:textSize="12sp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="STREAK  "
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            android:letterSpacing="0.2"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/bestStreakValueTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textColor="@color/warning"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-    </LinearLayout>
-
     <!-- WELCOME BLOCK -->
     <LinearLayout
         android:id="@+id/centerBlock"
@@ -169,5 +77,98 @@
             android:layout_marginTop="20dp"/>
 
     </LinearLayout>
+    
+    <!-- HIGH SCORE BOX -->
+    <LinearLayout
+        android:id="@+id/highScoreRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/high_score_box_bg"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/centerBlock"
+        app:layout_constraintBottom_toTopOf="@+id/playSoloButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BEST  "
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:letterSpacing="0.2"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/highScoreValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/accent"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="   ·   "
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="STREAK  "
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:letterSpacing="0.2"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/bestStreakValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/warning"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/playSoloButton"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="PLAY SOLO"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.15"
+        android:textColor="@color/text_primary"
+        app:cornerRadius="16dp"
+        app:backgroundTint="@color/primary"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/versionTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- VERSION FOOTER -->
+    <TextView
+        android:id="@+id/versionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="v1.0"
+        android:textColor="@color/text_secondary"
+        android:textSize="11sp"
+        android:letterSpacing="0.2"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

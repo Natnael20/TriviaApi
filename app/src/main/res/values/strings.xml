@@ -16,14 +16,32 @@
         <item>50 Questions</item>
     </string-array>
 
-    <string-array name="categories">
+     <string-array name="categories">
         <item>Any Category</item>
         <item>General Knowledge</item>
+        <item>Books</item>
+        <item>Film</item>
+        <item>Music</item>
+        <item>Musicals &amp; Theatres</item>
+        <item>Television</item>
+        <item>Video Games</item>
+        <item>Board Games</item>
         <item>Science &amp; Nature</item>
         <item>Computers</item>
-        <item>History</item>
+        <item>Mathematics</item>
+        <item>Mythology</item>
         <item>Sports</item>
-        <item>Music</item>
+        <item>Geography</item>
+        <item>History</item>
+        <item>Politics</item>
+        <item>Art</item>
+        <item>Celebrities</item>
+        <item>Animals</item>
+        <item>Vehicles</item>
+        <item>Comics</item>
+        <item>Gadgets</item>
+        <item>Anime &amp; Manga</item>
+        <item>Cartoon &amp; Animations</item>
     </string-array>
 
     <string-array name="question_types">

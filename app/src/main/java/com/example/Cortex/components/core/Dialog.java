@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -20,8 +21,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
  */
 public class Dialog {
 
-    private static final String BACKGROUND_COLOR = "#12172A";
-
+    private static final float MAX_HEIGHT = 0.4f;
     private final Activity activity;
 
     /**
@@ -66,11 +66,13 @@ public class Dialog {
 
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(
-                new android.graphics.drawable.ColorDrawable(Color.parseColor(BACKGROUND_COLOR)));
+                new android.graphics.drawable.ColorDrawable(
+                    ContextCompat.getColor(activity, R.color.surface_dark))
+            );
 
             if (scrollable) {
                 int maxHeight = (int) (activity.getResources()
-                    .getDisplayMetrics().heightPixels * 0.4);
+                    .getDisplayMetrics().heightPixels * MAX_HEIGHT);
                 WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
                 params.height = maxHeight;
                 dialog.getWindow().setAttributes(params);

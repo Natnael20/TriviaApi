@@ -8,6 +8,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import com.example.Cortex.listener.Callback;
+import java.util.*;
+
 
 /**
  * Fetches trivia questions from the Open Trivia DB API.
@@ -16,11 +19,7 @@ import java.util.concurrent.Executors;
 public class TriviaApi {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    public interface Callback {
-        void onSuccess(String json);
-        void onError(String error);
-    }
+    private Callback callback;
 
     public void fetchQuestions(int amount, String category, String difficulty,
                                String type, Callback callback) {
@@ -29,7 +28,8 @@ public class TriviaApi {
             try {
                 String url = buildUrl(amount, category, difficulty, type);
 
-                URL requestUrl = new URL(url);
+                URL requestUrl =
+                 new URL(url);
                 connection = (HttpURLConnection) requestUrl.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setConnectTimeout(10000);
@@ -94,17 +94,36 @@ public class TriviaApi {
         return url.toString();
     }
 
+    private static final Map<String, String> CATEGORY_IDS = new HashMap<String, String>() {{
+        put("Any Category", "");
+        put("General Knowledge", "9");
+        put("Books", "10");
+        put("Film", "11");
+        put("Music", "12");
+        put("Musicals & Theatres", "13");
+        put("Television", "14");
+        put("Video Games", "15");
+        put("Board Games", "16");
+        put("Science & Nature", "17");
+        put("Computers", "18");
+        put("Mathematics", "19");
+        put("Mythology", "20");
+        put("Sports", "21");
+        put("Geography", "22");
+        put("History", "23");
+        put("Politics", "24");
+        put("Art", "25");
+        put("Celebrities", "26");
+        put("Animals", "27");
+        put("Vehicles", "28");
+        put("Comics", "29");
+        put("Gadgets", "30");
+        put("Anime & Manga", "31");
+        put("Cartoon & Animations", "32");
+    }};
+
     private String getCategoryId(String category) {
-        switch (category) {
-            case "Any Category":       return "";
-            case "General Knowledge":  return "9";
-            case "Science & Nature":   return "17";
-            case "Computers":          return "18";
-            case "History":            return "23";
-            case "Sports":             return "21";
-            case "Music":              return "12";
-            default:                   return "";
-        }
+        return CATEGORY_IDS.get(category);
     }
 
     public void shutdown() {

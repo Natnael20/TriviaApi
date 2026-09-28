@@ -14,35 +14,52 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.Cortex.R;
+import com.example.Cortex.listener.EdgeLightningListener;
+import com.example.Cortex.manager.EdgeLightningManager;
 
 /**
  * Reusable drawer menu component.
- * Supports a toggle switch for Edge Lightning.
+ * Delegates Edge Lightning state to {@link EdgeLightningManager}.
  */
-public class Menu {
+public class Menu implements EdgeLightningListener {
 
     private final Activity activity;
     private final DrawerLayout drawerLayout;
     private final LinearLayout drawerItemsContainer;
+    private final EdgeLightningManager edgeManager;
 
-    private static boolean edgeLightningEnabled = false;
     private Switch edgeLightningSwitch;
 
     public Menu(Activity activity) {
         this.activity = activity;
         this.drawerLayout = activity.findViewById(R.id.drawerLayout);
         this.drawerItemsContainer = activity.findViewById(R.id.drawerItemsContainer);
+        this.edgeManager = EdgeLightningManager.getInstance(activity);
+        this.edgeManager.addListener(this);
     }
 
     public void initialize(ImageView menuButton) {
         menuButton.setOnClickListener(v ->
             drawerLayout.openDrawer(activity.findViewById(R.id.drawerPanel)));
-
         buildDrawerMenu();
     }
 
-    public static boolean isEdgeLightningEnabled() {
-        return edgeLightningEnabled;
+    /**
+     * Called by the manager whenever the state changes.
+     * Keeps the switch in sync.
+     */
+    @Override
+    public void onEdgeLightningChanged(boolean on) {
+        if (edgeLightningSwitch != null) {
+            edgeLightningSwitch.setChecked(on);
+        }
+    }
+
+    /**
+     * Call from the host activity's onDestroy to avoid leaks.
+     */
+    public void shutdown() {
+        edgeManager.removeListener(this);
     }
 
     private void buildDrawerMenu() {
@@ -67,7 +84,7 @@ public class Menu {
     }
 
     /**
-     * Creates a row with a label and a Switch for Edge Lightning.
+     * Row with a label + Switch. State comes from the manager.
      */
     private LinearLayout createSwitchRow(String title) {
         LinearLayout row = new LinearLayout(activity);
@@ -85,27 +102,20 @@ public class Menu {
             0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
         edgeLightningSwitch = new Switch(activity);
-        edgeLightningSwitch.setChecked(edgeLightningEnabled);
+        edgeLightningSwitch.setChecked(edgeManager.isEnabled());
+
+        // Just tell the manager — it will notify us back via onEdgeLightningChanged
         edgeLightningSwitch.setOnCheckedChangeListener((btn, isChecked) -> {
-            edgeLightningEnabled = isChecked;
-            Toast.makeText(activity,
-                "Edge Lightning " + (isChecked ? "ON" : "OFF"),
-                Toast.LENGTH_SHORT).show();
-            if (onEdgeLightningChanged != null) {
-                onEdgeLightningChanged.onChanged(isChecked);
-            }
+            edgeManager.setEnabled(isChecked);
         });
 
         row.addView(label);
         row.addView(edgeLightningSwitch);
-        row.setOnClickListener(v -> edgeLightningSwitch.toggle());
+        row.setOnClickListener(v -> edgeManager.toggle());
 
         return row;
     }
 
-    /**
-     * Regular menu item row.
-     */
     private TextView createMenuItemView(String title) {
         TextView tv = new TextView(activity);
         tv.setText(title);
@@ -128,30 +138,6 @@ public class Menu {
         } else if (itemId == R.id.action_about) {
             Toast.makeText(activity, "About", Toast.LENGTH_SHORT).show();
         }
-
         drawerLayout.closeDrawer(activity.findViewById(R.id.drawerPanel));
-    }
-
-    // ============ Listener ============
-
-    public interface OnEdgeLightningChanged {
-        void onChanged(boolean on);
-    }
-
-    private OnEdgeLightningChanged onEdgeLightningChanged;
-
-    public void setOnEdgeLightningChanged(OnEdgeLightningChanged listener) {
-        this.onEdgeLightningChanged = listener;
-    }
-
-    public boolean isEdgeLightningOn() {
-        return edgeLightningEnabled;
-    }
-
-    public void setEdgeLightningOn(boolean on) {
-        edgeLightningEnabled = on;
-        if (edgeLightningSwitch != null) {
-            edgeLightningSwitch.setChecked(on);
-        }
     }
 }
