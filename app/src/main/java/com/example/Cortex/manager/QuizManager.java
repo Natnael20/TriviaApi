@@ -37,7 +37,6 @@ public class QuizManager  {
     /**
      * Starts the quiz with the given setup values.
      */
-
     public void start(String amountLabel, String category, String difficulty, String type) {
         if (amountLabel == null) amountLabel = String.valueOf(Constants.MAX_AMOUNT);
         if (category == null)    category = Constants.DEFAULT_CATEGORY;
