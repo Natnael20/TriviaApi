@@ -94,6 +94,10 @@ public class TriviaApi {
         return url.toString();
     }
 
+    private String getCategoryId(String category) {
+        return CATEGORY_IDS.get(category);
+    }
+
     private static final Map<String, String> CATEGORY_IDS = new HashMap<String, String>() {{
         put("Any Category", "");
         put("General Knowledge", "9");
@@ -121,10 +125,6 @@ public class TriviaApi {
         put("Anime & Manga", "31");
         put("Cartoon & Animations", "32");
     }};
-
-    private String getCategoryId(String category) {
-        return CATEGORY_IDS.get(category);
-    }
 
     public void shutdown() {
         executor.shutdown();

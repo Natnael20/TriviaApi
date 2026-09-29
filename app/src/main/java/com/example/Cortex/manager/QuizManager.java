@@ -74,7 +74,6 @@ public class QuizManager  {
     public boolean checkAnswer(String answer) {
         //get the current question
         Question current = getCurrentQuestion();
-
         boolean isCorrect = current.getCorrectAnswer().equals(answer);
 
         if (isCorrect) {
@@ -138,6 +137,11 @@ public class QuizManager  {
 
     public int calculateProgress(int number, int total) {
         return (int) (((number - 1) / (float) total) * 100);
+    }
+
+    public int getAccuracy() {
+        int total = session.getTotalQuestions();
+        return Math.round((session.getCorrectCount() / (float) total) * 100);
     }
 
     public void shutdown() {

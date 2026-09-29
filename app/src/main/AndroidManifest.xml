@@ -39,6 +39,17 @@
             android:name=".ResultActivity"
             android:exported="false"
             android:theme="@style/Theme.Cortex" />
+        
+        <receiver
+            android:name=".widget.CortexWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/cortex_widget_info" />
+        </receiver>
 
     </application>
 </manifest>

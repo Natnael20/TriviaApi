@@ -13,6 +13,8 @@ public class QuizSession {
     private int wrongCount;
     private int totalQuestions;
 
+    public QuizSession() {}
+
     public int getCurrentIndex() { 
         return currentIndex;
     }

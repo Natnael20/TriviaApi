@@ -17,7 +17,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 /**
  * Reusable dropdown dialog.
- * Shows a list of options with white text on a dark background (#12172A).
+ * Shows a list of options with white text on a dark background.
  */
 public class Dialog {
 

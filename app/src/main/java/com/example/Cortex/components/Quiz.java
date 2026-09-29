@@ -82,11 +82,6 @@ public class Quiz implements QuizListener {
         quizManager.start(amountLabel, category, difficulty, type);
     }
 
-    public void shutdown() {
-        stopTimer();
-        quizManager.shutdown();
-    }
-
     private void initializeViews() {
         scoreTextView = activity.findViewById(R.id.scoreTextView);
         timerTextView = activity.findViewById(R.id.timerTextView);
@@ -121,11 +116,16 @@ public class Quiz implements QuizListener {
         startTimer();
         lightning.applyEvent(edgeLightningView, Event.NEW_QUESTION);
     }
+    
+    public void shutdown() {
+        stopTimer();
+        quizManager.shutdown();
+    }
 
     private String applyDifficultyColor(String difficulty) {
-        String key = difficulty.trim().toLowerCase();
+        String level = difficulty.trim().toLowerCase();
         int color;
-        switch (key) {
+        switch (level) {
             case Constants.DIFFICULTY_EASY:
                 color = ContextCompat.getColor(activity, R.color.success);
                 break;
@@ -141,7 +141,7 @@ public class Quiz implements QuizListener {
         }
 
         difficultyTextView.setTextColor(color);
-        return key.toUpperCase();
+        return level.toUpperCase();
     }
 
     private void startTimer() {
@@ -170,7 +170,9 @@ public class Quiz implements QuizListener {
     }
 
     private void onTimeUp() {
-        if (answered) return;
+        if (answered) {
+            return;
+        } 
         answered = true;
 
         quizManager.checkAnswer("");
@@ -183,7 +185,6 @@ public class Quiz implements QuizListener {
     }
 
     // ============ Answer Buttons ============
-
     private void buildAnswerButtons(Question question) {
         answersContainer.removeAllViews();
 
@@ -244,8 +245,6 @@ public class Quiz implements QuizListener {
         }
     }
 
-    // ============ Navigation ============
-
     private void goToNextQuestion() {
         stopTimer();
         Question next = quizManager.nextQuestion();
@@ -263,6 +262,7 @@ public class Quiz implements QuizListener {
         intent.putExtra(Constants.EXTRA_CORRECT, session.getCorrectCount());
         intent.putExtra(Constants.EXTRA_WRONG, session.getWrongCount());
         intent.putExtra(Constants.EXTRA_BEST_STREAK, session.getBestStreak());
+        intent.putExtra(Constants.EXTRA_ACCURACY, quizManager.getAccuracy()); 
         intent.putExtra(Constants.EXTRA_TOTAL, session.getTotalQuestions());
 
         intent.putExtra(Constants.EXTRA_AMOUNT,
@@ -277,8 +277,6 @@ public class Quiz implements QuizListener {
         activity.startActivity(intent);
         activity.finish();
     }
-
-    // ============ Score + Streak ============
 
     private void updateScoreAndStreak() {
         QuizSession session = quizManager.getSession();

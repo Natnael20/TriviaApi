@@ -19,6 +19,7 @@ public class Constants {
     public static final String EXTRA_CORRECT = "extra_correct";
     public static final String EXTRA_WRONG = "extra_wrong";
     public static final String EXTRA_BEST_STREAK = "extra_best_streak";
+    public static final String EXTRA_ACCURACY = "extra_accuracy";
     public static final String EXTRA_TOTAL = "extra_total";
 
     // Timer

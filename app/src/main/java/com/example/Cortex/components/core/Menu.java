@@ -44,20 +44,11 @@ public class Menu implements EdgeLightningListener {
         buildDrawerMenu();
     }
 
-    /**
-     * Called by the manager whenever the state changes.
-     * Keeps the switch in sync.
-     */
     @Override
     public void onEdgeLightningChanged(boolean on) {
-        if (edgeLightningSwitch != null) {
-            edgeLightningSwitch.setChecked(on);
-        }
+        if (edgeLightningSwitch != null) edgeLightningSwitch.setChecked(on);
     }
 
-    /**
-     * Call from the host activity's onDestroy to avoid leaks.
-     */
     public void shutdown() {
         edgeManager.removeListener(this);
     }
@@ -83,9 +74,6 @@ public class Menu implements EdgeLightningListener {
         }
     }
 
-    /**
-     * Row with a label + Switch. State comes from the manager.
-     */
     private LinearLayout createSwitchRow(String title) {
         LinearLayout row = new LinearLayout(activity);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -103,11 +91,8 @@ public class Menu implements EdgeLightningListener {
 
         edgeLightningSwitch = new Switch(activity);
         edgeLightningSwitch.setChecked(edgeManager.isEnabled());
-
-        // Just tell the manager — it will notify us back via onEdgeLightningChanged
-        edgeLightningSwitch.setOnCheckedChangeListener((btn, isChecked) -> {
-            edgeManager.setEnabled(isChecked);
-        });
+        edgeLightningSwitch.setOnCheckedChangeListener((btn, checked) ->
+            edgeManager.setEnabled(checked));
 
         row.addView(label);
         row.addView(edgeLightningSwitch);
@@ -132,11 +117,7 @@ public class Menu implements EdgeLightningListener {
 
     private void handleMenuItemClick(int itemId) {
         if (itemId == R.id.action_high_scores) {
-            Toast.makeText(activity, "High Scores", Toast.LENGTH_SHORT).show();
-        } else if (itemId == R.id.action_settings) {
-            Toast.makeText(activity, "Settings", Toast.LENGTH_SHORT).show();
-        } else if (itemId == R.id.action_about) {
-            Toast.makeText(activity, "About", Toast.LENGTH_SHORT).show();
+            activity.moveTaskToBack(true);
         }
         drawerLayout.closeDrawer(activity.findViewById(R.id.drawerPanel));
     }

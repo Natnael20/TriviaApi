@@ -60,23 +60,19 @@ public class Result {
         int score = intent.getIntExtra(Constants.EXTRA_SCORE, 0);
         int correct = intent.getIntExtra(Constants.EXTRA_CORRECT, 0);
         int wrong = intent.getIntExtra(Constants.EXTRA_WRONG, 0);
+        int accuracy = intent.getIntExtra(Constants.EXTRA_ACCURACY, 0);
         int bestStreak = intent.getIntExtra(Constants.EXTRA_BEST_STREAK, 0);
         int total = intent.getIntExtra(Constants.EXTRA_TOTAL, 0);
 
-        // Save the score — check if it's a new high score
         isNewHighScore = scoreManager.trySave(score, bestStreak);
-
-        int accuracy = total > 0 ? Math.round((correct / (float) total) * 100) : 0;
 
         finalScoreTextView.setText(String.valueOf(score));
         correctCountTextView.setText(String.valueOf(correct));
         wrongCountTextView.setText(String.valueOf(wrong));
         accuracyTextView.setText(accuracy + "%");
-        bestStreakTextView.setText(" " + bestStreak);
+        bestStreakTextView.setText("" + bestStreak);
 
-        // Show "NEW HIGH SCORE" tag if applicable
         if (isNewHighScore) {
-            // Simple: append to score unit label
             TextView scoreUnit = activity.findViewById(R.id.scoreUnitTextView);
             if (scoreUnit != null) {
                 scoreUnit.setText("POINTS · NEW RECORD!");

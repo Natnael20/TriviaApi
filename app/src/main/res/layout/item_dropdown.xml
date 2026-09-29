@@ -9,4 +9,4 @@
     android:paddingBottom="15dp"
     android:textColor="@color/text_primary"
     android:textSize="14sp"
-    android:background="#12172A"/>
+    android:background="@color/surface_dark"/>
