@@ -95,35 +95,36 @@ public class TriviaApi {
     }
 
     private String getCategoryId(String category) {
-        return CATEGORY_IDS.get(category);
+        Integer id = CATEGORY_IDS.get(category);
+        return id != null ? String.valueOf(id) : "";
     }
 
-    private static final Map<String, String> CATEGORY_IDS = new HashMap<String, String>() {{
-        put("Any Category", "");
-        put("General Knowledge", "9");
-        put("Books", "10");
-        put("Film", "11");
-        put("Music", "12");
-        put("Musicals & Theatres", "13");
-        put("Television", "14");
-        put("Video Games", "15");
-        put("Board Games", "16");
-        put("Science & Nature", "17");
-        put("Computers", "18");
-        put("Mathematics", "19");
-        put("Mythology", "20");
-        put("Sports", "21");
-        put("Geography", "22");
-        put("History", "23");
-        put("Politics", "24");
-        put("Art", "25");
-        put("Celebrities", "26");
-        put("Animals", "27");
-        put("Vehicles", "28");
-        put("Comics", "29");
-        put("Gadgets", "30");
-        put("Anime & Manga", "31");
-        put("Cartoon & Animations", "32");
+    private static final Map<String, Integer> CATEGORY_IDS = new HashMap<String, Integer>() {{
+        put("Any Category", 0);
+        put("General Knowledge", 9);
+        put("Books", 10);
+        put("Film", 11);
+        put("Music", 12);
+        put("Musicals & Theatres", 13);
+        put("Television", 14);
+        put("Video Games", 15);
+        put("Board Games", 16);
+        put("Science & Nature", 17);
+        put("Computers", 18);
+        put("Mathematics", 19);
+        put("Mythology", 20);
+        put("Sports", 21);
+        put("Geography", 22);
+        put("History", 23);
+        put("Politics", 24);
+        put("Art", 25);
+        put("Celebrities", 26);
+        put("Animals", 27);
+        put("Vehicles", 28);
+        put("Comics", 29);
+        put("Gadgets", 30);
+        put("Anime & Manga", 31);
+        put("Cartoon & Animations", 32);
     }};
 
     public void shutdown() {
