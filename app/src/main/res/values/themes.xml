@@ -8,6 +8,7 @@
         
         <!-- Secondary brand color -->
         <item name="colorSecondary">@color/accent</item>
+        <item name="colorOnSecondary">@color/on_accent</item>
         
         <!-- Background & Surface -->
         <item name="android:colorBackground">@color/background_dark</item>

@@ -1,7 +1,6 @@
 package com.example.Cortex.components.core;
 
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,8 +8,10 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+
 import androidx.core.content.ContextCompat;
 
+import com.example.Cortex.R;
 
 /**
  * Draws TWO moving glowing segments along the view's edges.
@@ -20,7 +21,7 @@ public class EdgeLightningView extends View {
 
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private int glowColor = Color.parseColor("#00D9FF");
+    private int glowColor;
     private float intensity = 1f;
 
     /** 0..1 — position of the first segment. The second is +0.5 ahead. */
@@ -46,6 +47,9 @@ public class EdgeLightningView extends View {
     private void init() {
         paint.setStyle(Paint.Style.STROKE);
         setWillNotDraw(false);
+
+        glowColor = ContextCompat.getColor(getContext(), R.color.accent);
+
         startMoving();
     }
 
@@ -60,7 +64,8 @@ public class EdgeLightningView extends View {
     }
 
     private void startMoving() {
-        if (moveAnimator != null) moveAnimator.cancel();
+        if (moveAnimator != null)
+            moveAnimator.cancel();
 
         moveAnimator = ValueAnimator.ofFloat(0f, 1f);
         moveAnimator.setDuration(5000);
@@ -88,7 +93,8 @@ public class EdgeLightningView extends View {
 
         float w = getWidth();
         float h = getHeight();
-        if (w <= 0 || h <= 0) return;
+        if (w <= 0 || h <= 0)
+            return;
 
         // Draw two opposite segments
         drawSegment(canvas, position, w, h);
@@ -97,14 +103,14 @@ public class EdgeLightningView extends View {
         // Faint baseline so the whole rectangle is subtly visible
         paint.setStrokeWidth(dp(1));
         paint.setColor(Color.argb(
-            (int) (255 * intensity * 0.15f),
-            Color.red(glowColor), Color.green(glowColor), Color.blue(glowColor)));
+                (int) (255 * intensity * 0.15f),
+                Color.red(glowColor), Color.green(glowColor), Color.blue(glowColor)));
         canvas.drawRect(0, 0, w, h, paint);
     }
 
     private void drawSegment(Canvas canvas, float startP, float w, float h) {
         float perimeter = 2 * (w + h);
-        float segmentLength = perimeter * 0.25f;   // length of the line
+        float segmentLength = perimeter * 0.25f; // length of the line
         int steps = 80;
 
         paint.setStrokeWidth(dp(2));
@@ -134,13 +140,16 @@ public class EdgeLightningView extends View {
         float perimeter = 2 * (w + h);
         float d = p * perimeter;
 
-        if (d < w)             return new float[]{ d, 0 };
+        if (d < w)
+            return new float[] { d, 0 };
         d -= w;
-        if (d < h)             return new float[]{ w, d };
+        if (d < h)
+            return new float[] { w, d };
         d -= h;
-        if (d < w)             return new float[]{ w - d, h };
+        if (d < w)
+            return new float[] { w - d, h };
         d -= w;
-        return new float[]{ 0, h - d };
+        return new float[] { 0, h - d };
     }
 
     private float dp(float value) {
