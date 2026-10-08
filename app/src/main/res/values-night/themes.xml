@@ -5,13 +5,9 @@
         
         <!-- Primary brand color -->
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryVariant">@color/primary_variant</item>
-        <item name="colorOnPrimary">@color/on_primary</item>
         
         <!-- Secondary brand color -->
         <item name="colorSecondary">@color/accent</item>
-        <item name="colorSecondaryVariant">@color/accent_variant</item>
-        <item name="colorOnSecondary">@color/on_accent</item>
         
         <!-- Background & Surface -->
         <item name="android:colorBackground">@color/background_dark</item>
@@ -36,7 +32,6 @@
         <!-- Text colors -->
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
-        <item name="android:textColorHint">@color/text_hint</item>
         
         <!-- Window background -->
         <item name="android:windowBackground">@color/background_dark</item>
@@ -44,8 +39,8 @@
 
     <!-- Custom dialog style: dark background, white text -->
     <style name="CortexAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="colorSurface">#12172A</item>
-        <item name="android:textColorPrimary">@color/white</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="android:textColorPrimary">@color/primary</item>
     </style>
     
 </resources>

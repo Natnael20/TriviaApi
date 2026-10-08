@@ -145,7 +145,7 @@
         android:id="@+id/playSoloButton"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:text="PLAY SOLO"
+        android:text="GET STARTED"
         android:textSize="16sp"
         android:textStyle="bold"
         android:letterSpacing="0.15"

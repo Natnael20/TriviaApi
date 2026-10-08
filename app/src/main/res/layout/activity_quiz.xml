@@ -79,16 +79,20 @@
     <!-- CATEGORY -->
     <TextView
         android:id="@+id/categoryTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="CATEGORY"
         android:textColor="@color/accent"
         android:textSize="11sp"
         android:letterSpacing="0.15"
         android:textStyle="bold"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="12dp"
+        android:maxLines="2"
+        android:ellipsize="end"
         app:layout_constraintTop_toBottomOf="@id/progressBar"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/difficultyTextView"/>
 
     <!-- DIFFICULTY -->
     <TextView
@@ -100,30 +104,15 @@
         android:textSize="11sp"
         android:letterSpacing="0.15"
         android:textStyle="bold"
-        android:layout_marginStart="12dp"
         app:layout_constraintBaseline_toBaselineOf="@id/categoryTextView"
-        app:layout_constraintStart_toEndOf="@id/categoryTextView"/>
-
-    <!-- TYPE -->
-    <TextView
-        android:id="@+id/typeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TYPE"
-        android:textColor="@color/success"
-        android:textSize="11sp"
-        android:letterSpacing="0.15"
-        android:textStyle="bold"
-        android:layout_marginStart="12dp"
-        app:layout_constraintBaseline_toBaselineOf="@id/categoryTextView"
-        app:layout_constraintStart_toEndOf="@id/difficultyTextView"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- QUESTION TEXT -->
     <TextView
         android:id="@+id/questionTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Question text"
+        android:text="Fetching Questions..."
         android:textColor="@color/text_primary"
         android:textSize="20sp"
         android:lineSpacingExtra="6dp"

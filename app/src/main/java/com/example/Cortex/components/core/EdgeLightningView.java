@@ -1,6 +1,7 @@
 package com.example.Cortex.components.core;
 
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,6 +9,8 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import androidx.core.content.ContextCompat;
+
 
 /**
  * Draws TWO moving glowing segments along the view's edges.

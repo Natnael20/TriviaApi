@@ -67,6 +67,36 @@ public class QuizManager  {
                 }
             });
     }
+    
+    /**
+     * Returns the current question.
+     */
+    public Question getCurrentQuestion() {
+        if (questions == null || questions.isEmpty()) {
+            return null;
+        } 
+        int idx = session.getCurrentIndex();
+        if (idx < 0 || idx >= questions.size()) {
+            return null;
+        } 
+        return questions.get(idx);
+    }
+    
+    /**
+     * Advances to the next question.
+     * @return The next question, or null if the quiz is finished
+     */
+    public Question nextQuestion() {
+        int next = session.getCurrentIndex() + 1;
+        session.setCurrentIndex(next);
+
+        if (next >= questions.size()) {
+            return null;
+        }
+
+        showCurrentQuestion();
+        return questions.get(next);
+    }
 
     /**
      * Checks the given answer and updates the session.
@@ -95,45 +125,27 @@ public class QuizManager  {
         return isCorrect;
     }
 
-    /**
-     * Advances to the next question.
-     *
-     * @return The next question, or null if the quiz is finished
-     */
-    public Question nextQuestion() {
-        int next = session.getCurrentIndex() + 1;
-        session.setCurrentIndex(next);
-
-        if (next >= questions.size()) {
-            return null;
-        }
-
-        showCurrentQuestion();
-        return questions.get(next);
-    }
-
-    /**
-     * Returns the current question.
-     */
-    public Question getCurrentQuestion() {
-        if (questions == null || questions.isEmpty()) return null;
-        int idx = session.getCurrentIndex();
-        if (idx < 0 || idx >= questions.size()) return null;
-        return questions.get(idx);
-    }
+   
 
     public int validateAmount(String amountLabel) {
         int requested = extractNumber(amountLabel);
-        if (requested <= 0) return Constants.MAX_AMOUNT;
+        if (requested <= 0) {
+             return Constants.MAX_AMOUNT;
+        }
         return Math.min(requested, Constants.MAX_AMOUNT);
     }
-
+    
+    /** 
     public String questionType(String type) {
-        if (type == null) return "";
-        if (type.equalsIgnoreCase("multiple")) return "MULTI";
-        if (type.equalsIgnoreCase("boolean"))  return "TRUE / FALSE";
+        if (type.equalsIgnoreCase("multiple")) {
+            return "MULTI";
+        } 
+        if (type.equalsIgnoreCase("boolean")) {
+            return "TRUE / FALSE";
+        } 
         return type.toUpperCase();
     }
+    */
 
     public int calculateProgress(int number, int total) {
         return (int) (((number - 1) / (float) total) * 100);
@@ -148,27 +160,27 @@ public class QuizManager  {
         triviaApi.shutdown();
     }
 
-    // ============ Internal ============
-
     private void showCurrentQuestion() {
-        if (listener == null || questions == null || questions.isEmpty()) return;
+        if (listener == null || questions == null || questions.isEmpty()) {
+            return;
+        }
 
-        Question q = getCurrentQuestion();
-        if (q == null) return;
+        Question question = getCurrentQuestion();
 
         int number = session.getCurrentIndex() + 1;
-        listener.onQuestionReady(q, number, questions.size());
+        listener.onQuestionReady(question, number, questions.size());
     }
 
     private int extractNumber(String text) {
-        if (text == null) return Constants.MAX_AMOUNT;
-
         StringBuilder digits = new StringBuilder();
         for (char c : text.toCharArray()) {
             if (Character.isDigit(c)) digits.append(c);
         }
-        return digits.length() > 0
+
+        int number = digits.length() > 0
             ? Integer.parseInt(digits.toString())
             : Constants.MAX_AMOUNT;
+
+        return number;
     }
 }

@@ -46,4 +46,9 @@ public class Constants {
     // Type labels
     public static final String LABEL_MULTIPLE = "Multiple Choice";
     public static final String LABEL_TRUE_FALSE = "True / False";
+
+    //high score
+    public static final String PREFS_NAME = "cortex_prefs";
+    public static final String KEY_HIGH_SCORE = "high_score";
+    public static final String KEY_BEST_STREAK = "best_streak";
 }

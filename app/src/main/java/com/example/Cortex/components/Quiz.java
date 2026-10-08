@@ -42,7 +42,6 @@ public class Quiz implements QuizListener {
     private TextView progressTextView;
     private TextView categoryTextView;
     private TextView difficultyTextView;
-    private TextView typeTextView;
     private TextView questionTextView;
     private LinearLayout answersContainer;
     private TextView nextButton;
@@ -90,7 +89,6 @@ public class Quiz implements QuizListener {
         progressTextView = activity.findViewById(R.id.progressTextView);
         categoryTextView = activity.findViewById(R.id.categoryTextView);
         difficultyTextView = activity.findViewById(R.id.difficultyTextView);
-        typeTextView = activity.findViewById(R.id.typeTextView);
         questionTextView = activity.findViewById(R.id.questionTextView);
         answersContainer = activity.findViewById(R.id.answersContainer);
         nextButton = activity.findViewById(R.id.nextButton);
@@ -106,7 +104,6 @@ public class Quiz implements QuizListener {
         progressTextView.setText(number + " / " + total);
         categoryTextView.setText(question.getCategory().toUpperCase());
         difficultyTextView.setText(applyDifficultyColor(question.getDifficulty()));
-        typeTextView.setText(quizManager.questionType(question.getType()));
         questionTextView.setText(question.getQuestion());
         progressBar.setProgress(quizManager.calculateProgress(number, total));
         updateScoreAndStreak();
