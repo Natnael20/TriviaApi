@@ -8,6 +8,9 @@ Cortex is an Android quiz application built with Java that fetches trivia questi
 
 The app was developed as a final project (gesällprov) with a focus on clean modular architecture, layered design, and an enjoyable user experience.
 
+## Prototype
+![Prototype](assets/prototype.png)
+
 ## Features
 
 ### Core
@@ -62,3 +65,5 @@ Command-line build:
 ```bash
 ./gradlew assembleDebug
 ./gradlew installDebug
+
+
