@@ -38,10 +38,18 @@ public class QuizManager  {
      * Starts the quiz with the given setup values.
      */
     public void start(String amountLabel, String category, String difficulty, String type) {
-        if (amountLabel == null) amountLabel = String.valueOf(Constants.MAX_AMOUNT);
-        if (category == null)    category = Constants.DEFAULT_CATEGORY;
-        if (difficulty == null)  difficulty = Constants.DEFAULT_DIFFICULTY;
-        if (type == null)        type = Constants.DEFAULT_TYPE;
+        if (amountLabel == null) {
+            amountLabel = String.valueOf(Constants.MAX_AMOUNT);
+        } 
+        if (category == null) {
+            category = Constants.DEFAULT_CATEGORY;
+        }    
+        if (difficulty == null) {
+            difficulty = Constants.DEFAULT_DIFFICULTY;
+        }  
+        if (type == null)  {
+            type = Constants.DEFAULT_TYPE;
+        }      
 
         session = new QuizSession();
 
@@ -124,8 +132,6 @@ public class QuizManager  {
 
         return isCorrect;
     }
-
-   
 
     public int validateAmount(String amountLabel) {
         int requested = extractNumber(amountLabel);

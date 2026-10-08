@@ -4,6 +4,7 @@ import com.example.Cortex.model.Question;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import android.util.Base64;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,36 +34,30 @@ public class JsonUtils {
     public static List<Question> parseQuestions(String json) {
         List<Question> questions = new ArrayList<>();
 
-        if (json == null || json.isEmpty()) {
-            return questions;
-        }
+        if (json == null || json.isEmpty()) return questions;
 
         try {
             JSONObject root = new JSONObject(json);
-
             int responseCode = root.optInt(KEY_RESPONSE_CODE, -1);
-            if (responseCode != 0) {
-                return questions;
-            }
+            if (responseCode != 0) return questions;
 
             JSONArray results = root.getJSONArray(KEY_RESULTS);
 
             for (int i = 0; i < results.length(); i++) {
                 JSONObject item = results.getJSONObject(i);
 
-                String questionText  = decodeHtml(item.getString(KEY_QUESTION));
-                String category      = decodeHtml(item.getString(KEY_CATEGORY));
-                String difficulty    = decodeHtml(item.getString(KEY_DIFFICULTY));
-                String type          = decodeHtml(item.getString(KEY_TYPE));
-                String correctAnswer = decodeHtml(item.getString(KEY_CORRECT));
+                String questionText  = decode(item.getString(KEY_QUESTION));
+                String category = decode(item.getString(KEY_CATEGORY));
+                String difficulty = decode(item.getString(KEY_DIFFICULTY));
+                String type = decode(item.getString(KEY_TYPE));
+                String correctAnswer = decode(item.getString(KEY_CORRECT));
 
-                // Build the shuffled answers list: correct + incorrect
                 List<String> allAnswers = new ArrayList<>();
                 allAnswers.add(correctAnswer);
 
                 JSONArray incorrectArray = item.getJSONArray(KEY_INCORRECT);
                 for (int j = 0; j < incorrectArray.length(); j++) {
-                    allAnswers.add(decodeHtml(incorrectArray.getString(j)));
+                    allAnswers.add(decode(incorrectArray.getString(j)));
                 }
 
                 Collections.shuffle(allAnswers);
@@ -78,26 +73,14 @@ public class JsonUtils {
         return questions;
     }
 
-    /**
-     * Decodes common HTML entities used in the OpenTDB responses.
-     * e.g. "&quot;" → "\"", "&#039;" → "'", "&amp;" → "&"
-     *
-     * @param text The raw text possibly containing HTML entities
-     * @return The decoded text
-     */
-    private static String decodeHtml(String text) {
-        if (text == null) return "";
-
-        return text
-            .replace("&quot;", "\"")
-            .replace("&#039;", "'")
-            .replace("&apos;", "'")
-            .replace("&amp;", "&")
-            .replace("&lt;", "<")
-            .replace("&gt;", ">")
-            .replace("&ldquo;", "\u201C")   // "
-            .replace("&rdquo;", "\u201D")   // "
-            .replace("&hellip;", "\u2026")  // …
-            .replace("&eacute;", "é");
+    private static String decode(String text) {
+        if (text == null || text.isEmpty()) return "";
+        try {
+            byte[] decoded = Base64.decode(text, Base64.DEFAULT);
+            return new String(decoded, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import com.example.Cortex.util.Constants;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import com.example.Cortex.listener.Callback;
@@ -76,8 +77,8 @@ public class TriviaApi {
 
         // Difficulty
         if (difficulty != null && !difficulty.equals(Constants.DEFAULT_DIFFICULTY)) {
-            String diff = difficulty.toLowerCase();
-            if (diff.equals("easy") || diff.equals("medium") || diff.equals("hard")) {
+            String diff = difficulty.trim().toLowerCase();
+            if (diff.equals(Constants.DIFFICULTY_EASY) || diff.equals(Constants.DIFFICULTY_MEDIUM) || diff.equals(Constants.DIFFICULTY_HARD)) {
                 url.append("&difficulty=").append(diff);
             }
         }
@@ -85,11 +86,14 @@ public class TriviaApi {
         // Type
         if (type != null && !type.equals(Constants.DEFAULT_TYPE)) {
             if (type.equals(Constants.LABEL_MULTIPLE)) {
-                url.append("&type=").append(Constants.TYPE_MULTIPLE);
+                url.append("&type=multiple");
             } else if (type.equals(Constants.LABEL_TRUE_FALSE)) {
-                url.append("&type=").append(Constants.TYPE_TRUE_FALSE);
+                url.append("&type=boolean");
             }
         }
+
+        // Encoding — every text field comes back Base64-encoded
+        url.append("&encode=").append(Constants.ENCODE);
 
         return url.toString();
     }
